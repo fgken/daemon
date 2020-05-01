@@ -1,0 +1,19 @@
+{
+  // https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug daemon",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bazel-bin/src/main",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "lldb",
+      "preLaunchTask": "Build daemon (Debug)"
+    }
+  ]
+}
