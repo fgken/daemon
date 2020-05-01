@@ -1,6 +1,23 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+
+cc_library(
+    name = "log",
+    srcs = ["log.c"],
+    hdrs = ["log.h"],
+)
+
+cc_library(
+    name = "daemon",
+    srcs = ["daemon.c"],
+    hdrs = ["daemon.h"],
+    deps = [":log"],
+)
 
 cc_binary(
-    name = "daemon",
+    name = "main",
     srcs = ["main.c"],
+    deps = [
+        ":daemon",
+        ":log",
+    ],
 )
