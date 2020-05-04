@@ -4,6 +4,7 @@ cc_library(
     name = "log",
     srcs = ["log.c"],
     hdrs = ["log.h"],
+    visibility = ["//test/src:__pkg__"],
 )
 
 cc_library(
