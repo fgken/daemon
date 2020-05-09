@@ -10,6 +10,9 @@ extern int test_output_to_stderr;
 extern int test_output_to_syslog;
 extern int test_level;
 
+#define SYSLOG_IDENT "daemon"
+#define SYSLOG_FACILITY LOG_DAEMON
+
 void
 init_mock(void)
 {
@@ -21,7 +24,7 @@ init_mock(void)
 TEST(LogTest, OutputToStderr)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR, NULL, 0);
+    log_init(LOG_OUTPUT_STDERR, SYSLOG_IDENT, SYSLOG_FACILITY);
     log_err("LogTest");
     EXPECT_EQ(1, test_output_to_stderr);
     EXPECT_EQ(0, test_output_to_syslog);
@@ -30,7 +33,7 @@ TEST(LogTest, OutputToStderr)
 TEST(LogTest, OutputToSyslog)
 {
     init_mock();
-    log_init(LOG_OUTPUT_SYSLOG, "test", LOG_DAEMON);
+    log_init(LOG_OUTPUT_SYSLOG, SYSLOG_IDENT, SYSLOG_FACILITY);
     log_err("LogTest");
     EXPECT_EQ(0, test_output_to_stderr);
     EXPECT_EQ(1, test_output_to_syslog);
@@ -39,7 +42,8 @@ TEST(LogTest, OutputToSyslog)
 TEST(LogTest, OutputToStderrAndSyslog)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG, "test", LOG_DAEMON);
+    log_init(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG, SYSLOG_IDENT,
+             SYSLOG_FACILITY);
     log_err("LogTest");
     EXPECT_EQ(1, test_output_to_stderr);
     EXPECT_EQ(1, test_output_to_syslog);
@@ -48,7 +52,7 @@ TEST(LogTest, OutputToStderrAndSyslog)
 TEST(LogTest, ChangeOutput)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR, NULL, 0);
+    log_init(LOG_OUTPUT_STDERR, SYSLOG_IDENT, SYSLOG_FACILITY);
 
     log_set_output(LOG_OUTPUT_SYSLOG);
     log_err("LogTest");
@@ -69,7 +73,8 @@ TEST(LogTest, ChangeOutput)
 TEST(LogTest, SeverityLevel)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG, NULL, LOG_DAEMON);
+    log_init(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG, SYSLOG_IDENT,
+             SYSLOG_FACILITY);
 
     /* DEBUG Level */
     log_set_level(LOG_DEBUG);
