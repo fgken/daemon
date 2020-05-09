@@ -45,6 +45,27 @@ TEST(LogTest, OutputToStderrAndSyslog)
     EXPECT_EQ(1, test_output_to_syslog);
 }
 
+TEST(LogTest, ChangeOutput)
+{
+    init_mock();
+    log_init(LOG_OUTPUT_STDERR, NULL, 0);
+
+    log_set_output(LOG_OUTPUT_SYSLOG);
+    log_err("LogTest");
+    EXPECT_EQ(0, test_output_to_stderr);
+    EXPECT_EQ(1, test_output_to_syslog);
+
+    log_set_output(LOG_OUTPUT_STDERR);
+    log_err("LogTest");
+    EXPECT_EQ(1, test_output_to_stderr);
+    EXPECT_EQ(1, test_output_to_syslog);
+
+    log_set_output(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG);
+    log_err("LogTest");
+    EXPECT_EQ(2, test_output_to_stderr);
+    EXPECT_EQ(2, test_output_to_syslog);
+}
+
 TEST(LogTest, SeverityLevel)
 {
     init_mock();

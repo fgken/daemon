@@ -18,8 +18,7 @@ int test_level;
 void
 log_init(int outputs, const char *syslog_ident, int syslog_facility)
 {
-    use_stderr = outputs & LOG_OUTPUT_STDERR;
-    use_syslog = outputs & LOG_OUTPUT_SYSLOG;
+    log_set_output(outputs);
 
     if (use_syslog) {
         openlog(syslog_ident, LOG_PID | LOG_NDELAY, syslog_facility);
@@ -30,6 +29,13 @@ void
 log_set_level(int level)
 {
     lowest_level = level;
+}
+
+void
+log_set_output(int outputs)
+{
+    use_stderr = outputs & LOG_OUTPUT_STDERR;
+    use_syslog = outputs & LOG_OUTPUT_SYSLOG;
 }
 
 static void
