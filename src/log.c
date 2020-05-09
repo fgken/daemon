@@ -9,6 +9,12 @@ static bool use_stderr = false;
 static bool use_syslog = false;
 static int lowest_level = LOG_INFO;
 
+#ifdef UNIT_TEST
+int test_output_to_stderr = 0;
+int test_output_to_syslog = 0;
+int test_level;
+#endif
+
 void
 log_init(int outputs, const char *syslog_ident, int syslog_facility)
 {
@@ -36,11 +42,21 @@ vlog(int level, const char *fmt, va_list ap)
 
     va_copy(ap2, ap);
     if (use_stderr) {
+#ifndef UNIT_TEST
         vfprintf(stderr, fmt, ap);
         fprintf(stderr, "\n");
+#else
+        test_output_to_stderr++;
+        test_level = level;
+#endif
     }
     if (use_syslog) {
+#ifndef UNIT_TEST
         vsyslog(level, fmt, ap2);
+#else
+        test_output_to_syslog++;
+        test_level = level;
+#endif
     }
     va_end(ap2);
 }
