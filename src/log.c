@@ -20,7 +20,7 @@ log_init(int outputs, const char *syslog_ident, int syslog_facility)
 {
     log_set_output(outputs);
 
-    if (use_syslog) {
+    if (syslog_ident != NULL) {
         openlog(syslog_ident, LOG_PID | LOG_NDELAY, syslog_facility);
     }
 }
