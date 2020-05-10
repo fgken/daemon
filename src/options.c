@@ -30,12 +30,12 @@ parse_options(struct options *opts, int argc, char *const argv[])
             options.verbose++;
             break;
         default:
-            return 1;
+            return -1;
         }
     }
 
     if (0 < argc - optind)
-        return 1;
+        return -1;
 
     *opts = options;
     return 0;
