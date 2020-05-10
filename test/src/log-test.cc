@@ -21,29 +21,30 @@ init_mock(void)
     test_level_of_last_output = -1;
 }
 
-TEST(LogTest, OutputToStderr)
+TEST(LogTest, OutputToDefaultSyslog)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR, SYSLOG_IDENT, SYSLOG_FACILITY);
-    log_err("LogTest");
-    EXPECT_EQ(1, test_num_of_outputs_to_stderr);
-    EXPECT_EQ(0, test_num_of_outputs_to_syslog);
-}
-
-TEST(LogTest, OutputToSyslog)
-{
-    init_mock();
-    log_init(LOG_OUTPUT_SYSLOG, SYSLOG_IDENT, SYSLOG_FACILITY);
+    log_init(SYSLOG_IDENT, SYSLOG_FACILITY);
     log_err("LogTest");
     EXPECT_EQ(0, test_num_of_outputs_to_stderr);
     EXPECT_EQ(1, test_num_of_outputs_to_syslog);
 }
 
+TEST(LogTest, OutputToStderr)
+{
+    init_mock();
+    log_init(SYSLOG_IDENT, SYSLOG_FACILITY);
+    log_set_output(LOG_OUTPUT_STDERR);
+    log_err("LogTest");
+    EXPECT_EQ(1, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(0, test_num_of_outputs_to_syslog);
+}
+
 TEST(LogTest, OutputToStderrAndSyslog)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG, SYSLOG_IDENT,
-             SYSLOG_FACILITY);
+    log_init(SYSLOG_IDENT, SYSLOG_FACILITY);
+    log_set_output(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG);
     log_err("LogTest");
     EXPECT_EQ(1, test_num_of_outputs_to_stderr);
     EXPECT_EQ(1, test_num_of_outputs_to_syslog);
@@ -52,14 +53,13 @@ TEST(LogTest, OutputToStderrAndSyslog)
 TEST(LogTest, ChangeOutput)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR, SYSLOG_IDENT, SYSLOG_FACILITY);
+    log_init(SYSLOG_IDENT, SYSLOG_FACILITY);
+    log_set_output(LOG_OUTPUT_STDERR);
+    log_err("LogTest");
+    EXPECT_EQ(1, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(0, test_num_of_outputs_to_syslog);
 
     log_set_output(LOG_OUTPUT_SYSLOG);
-    log_err("LogTest");
-    EXPECT_EQ(0, test_num_of_outputs_to_stderr);
-    EXPECT_EQ(1, test_num_of_outputs_to_syslog);
-
-    log_set_output(LOG_OUTPUT_STDERR);
     log_err("LogTest");
     EXPECT_EQ(1, test_num_of_outputs_to_stderr);
     EXPECT_EQ(1, test_num_of_outputs_to_syslog);
@@ -73,8 +73,8 @@ TEST(LogTest, ChangeOutput)
 TEST(LogTest, SeverityLevel)
 {
     init_mock();
-    log_init(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG, SYSLOG_IDENT,
-             SYSLOG_FACILITY);
+    log_init(SYSLOG_IDENT, SYSLOG_FACILITY);
+    log_set_output(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG);
 
     /* DEBUG Level */
     log_set_level(LOG_DEBUG);

@@ -6,7 +6,7 @@
 #include "log.h"
 
 static bool use_stderr = false;
-static bool use_syslog = false;
+static bool use_syslog = true;
 static int lowest_level = LOG_INFO;
 
 #ifdef UNIT_TEST
@@ -16,10 +16,8 @@ int test_level_of_last_output;
 #endif
 
 void
-log_init(int outputs, const char *syslog_ident, int syslog_facility)
+log_init(const char *syslog_ident, int syslog_facility)
 {
-    log_set_output(outputs);
-
     if (syslog_ident != NULL) {
         openlog(syslog_ident, LOG_PID | LOG_NDELAY, syslog_facility);
     }
