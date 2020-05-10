@@ -6,9 +6,9 @@ extern "C" {
 
 #include "gtest/gtest.h"
 
-extern int test_output_to_stderr;
-extern int test_output_to_syslog;
-extern int test_level;
+extern int test_num_of_outputs_to_stderr;
+extern int test_num_of_outputs_to_syslog;
+extern int test_level_of_last_output;
 
 #define SYSLOG_IDENT "daemon"
 #define SYSLOG_FACILITY LOG_DAEMON
@@ -16,9 +16,9 @@ extern int test_level;
 void
 init_mock(void)
 {
-    test_output_to_stderr = 0;
-    test_output_to_syslog = 0;
-    test_level = -1;
+    test_num_of_outputs_to_stderr = 0;
+    test_num_of_outputs_to_syslog = 0;
+    test_level_of_last_output = -1;
 }
 
 TEST(LogTest, OutputToStderr)
@@ -26,8 +26,8 @@ TEST(LogTest, OutputToStderr)
     init_mock();
     log_init(LOG_OUTPUT_STDERR, SYSLOG_IDENT, SYSLOG_FACILITY);
     log_err("LogTest");
-    EXPECT_EQ(1, test_output_to_stderr);
-    EXPECT_EQ(0, test_output_to_syslog);
+    EXPECT_EQ(1, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(0, test_num_of_outputs_to_syslog);
 }
 
 TEST(LogTest, OutputToSyslog)
@@ -35,8 +35,8 @@ TEST(LogTest, OutputToSyslog)
     init_mock();
     log_init(LOG_OUTPUT_SYSLOG, SYSLOG_IDENT, SYSLOG_FACILITY);
     log_err("LogTest");
-    EXPECT_EQ(0, test_output_to_stderr);
-    EXPECT_EQ(1, test_output_to_syslog);
+    EXPECT_EQ(0, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(1, test_num_of_outputs_to_syslog);
 }
 
 TEST(LogTest, OutputToStderrAndSyslog)
@@ -45,8 +45,8 @@ TEST(LogTest, OutputToStderrAndSyslog)
     log_init(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG, SYSLOG_IDENT,
              SYSLOG_FACILITY);
     log_err("LogTest");
-    EXPECT_EQ(1, test_output_to_stderr);
-    EXPECT_EQ(1, test_output_to_syslog);
+    EXPECT_EQ(1, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(1, test_num_of_outputs_to_syslog);
 }
 
 TEST(LogTest, ChangeOutput)
@@ -56,18 +56,18 @@ TEST(LogTest, ChangeOutput)
 
     log_set_output(LOG_OUTPUT_SYSLOG);
     log_err("LogTest");
-    EXPECT_EQ(0, test_output_to_stderr);
-    EXPECT_EQ(1, test_output_to_syslog);
+    EXPECT_EQ(0, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(1, test_num_of_outputs_to_syslog);
 
     log_set_output(LOG_OUTPUT_STDERR);
     log_err("LogTest");
-    EXPECT_EQ(1, test_output_to_stderr);
-    EXPECT_EQ(1, test_output_to_syslog);
+    EXPECT_EQ(1, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(1, test_num_of_outputs_to_syslog);
 
     log_set_output(LOG_OUTPUT_STDERR | LOG_OUTPUT_SYSLOG);
     log_err("LogTest");
-    EXPECT_EQ(2, test_output_to_stderr);
-    EXPECT_EQ(2, test_output_to_syslog);
+    EXPECT_EQ(2, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(2, test_num_of_outputs_to_syslog);
 }
 
 TEST(LogTest, SeverityLevel)
@@ -80,24 +80,24 @@ TEST(LogTest, SeverityLevel)
     log_set_level(LOG_DEBUG);
 
     log_err("LogTest");
-    EXPECT_EQ(1, test_output_to_stderr);
-    EXPECT_EQ(1, test_output_to_syslog);
-    EXPECT_EQ(LOG_ERR, test_level);
+    EXPECT_EQ(1, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(1, test_num_of_outputs_to_syslog);
+    EXPECT_EQ(LOG_ERR, test_level_of_last_output);
 
     log_warn("LogTest");
-    EXPECT_EQ(2, test_output_to_stderr);
-    EXPECT_EQ(2, test_output_to_syslog);
-    EXPECT_EQ(LOG_WARNING, test_level);
+    EXPECT_EQ(2, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(2, test_num_of_outputs_to_syslog);
+    EXPECT_EQ(LOG_WARNING, test_level_of_last_output);
 
     log_info("LogTest");
-    EXPECT_EQ(3, test_output_to_stderr);
-    EXPECT_EQ(3, test_output_to_syslog);
-    EXPECT_EQ(LOG_INFO, test_level);
+    EXPECT_EQ(3, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(3, test_num_of_outputs_to_syslog);
+    EXPECT_EQ(LOG_INFO, test_level_of_last_output);
 
     log_debug("LogTest");
-    EXPECT_EQ(4, test_output_to_stderr);
-    EXPECT_EQ(4, test_output_to_syslog);
-    EXPECT_EQ(LOG_DEBUG, test_level);
+    EXPECT_EQ(4, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(4, test_num_of_outputs_to_syslog);
+    EXPECT_EQ(LOG_DEBUG, test_level_of_last_output);
 
     /* INFO Level */
     log_set_level(LOG_INFO);
@@ -106,9 +106,9 @@ TEST(LogTest, SeverityLevel)
     log_warn("LogTest");
     log_info("LogTest");
     log_debug("LogTest");
-    EXPECT_EQ(7, test_output_to_stderr);
-    EXPECT_EQ(7, test_output_to_syslog);
-    EXPECT_EQ(LOG_INFO, test_level);
+    EXPECT_EQ(7, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(7, test_num_of_outputs_to_syslog);
+    EXPECT_EQ(LOG_INFO, test_level_of_last_output);
 
     /* ERROR Level */
     log_set_level(LOG_ERR);
@@ -117,7 +117,7 @@ TEST(LogTest, SeverityLevel)
     log_warn("LogTest");
     log_info("LogTest");
     log_debug("LogTest");
-    EXPECT_EQ(8, test_output_to_stderr);
-    EXPECT_EQ(8, test_output_to_syslog);
-    EXPECT_EQ(LOG_ERR, test_level);
+    EXPECT_EQ(8, test_num_of_outputs_to_stderr);
+    EXPECT_EQ(8, test_num_of_outputs_to_syslog);
+    EXPECT_EQ(LOG_ERR, test_level_of_last_output);
 }
