@@ -5,7 +5,7 @@
 #include "daemon.h"
 #include "options.h"
 
-#define OPTS_STRING "c:dv"
+#define OPTS_STRING "c:dp:v"
 
 int
 parse_options(struct options *opts, int argc, char *const argv[])
@@ -22,6 +22,9 @@ parse_options(struct options *opts, int argc, char *const argv[])
             break;
         case 'd':
             options.dont_daemonize = true;
+            break;
+        case 'p':
+            options.pidfile = strdup(optarg);
             break;
         case 'v':
             options.verbose++;
@@ -48,5 +51,6 @@ usage(void)
            "  -c <path>: Path to the config file (default: " DEFAULT_CONFIG_FILE
            ")\n"
            "  -d: Don't daemonize\n"
+           "  -p <path>: Path to the pid file (default: " DEFAULT_PID_FILE ")\n"
            "  -v: Verbose logging\n";
 }

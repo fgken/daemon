@@ -15,8 +15,8 @@ compare_options(const struct options *a, const struct options *b)
 #define CMP(a, b, member) (a->member == b->member)
 #define CMPSTR(s1, s2) (s1 != NULL && s2 != NULL ? !strcmp(s1, s2) : s1 == s2)
 
-    return !(CMPSTR(a->conffile, b->conffile) && CMP(a, b, verbose)
-             && CMP(a, b, dont_daemonize));
+    return !(CMPSTR(a->conffile, b->conffile) && CMPSTR(a->pidfile, b->pidfile)
+             && CMP(a, b, verbose) && CMP(a, b, dont_daemonize));
 }
 
 class ParseOptionsTest : public ::testing::Test {
@@ -43,9 +43,17 @@ TEST_F(ParseOptionsTest, EmptyArgument)
 
 TEST_F(ParseOptionsTest, AllArguments)
 {
-    char *argv[] = {"progname", "-c", "/path/to/daemon.conf", "-v", "-d", NULL};
+    char *argv[] = {"progname",
+                    "-c",
+                    "/path/to/daemon.conf",
+                    "-p",
+                    "/path/to/daemon.pid",
+                    "-v",
+                    "-d",
+                    NULL};
     struct options expect = {
         .conffile = "/path/to/daemon.conf",
+        .pidfile = "/path/to/daemon.pid",
         .verbose = 1,
         .dont_daemonize = 1,
     };

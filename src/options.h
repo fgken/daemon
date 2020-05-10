@@ -5,6 +5,7 @@
 
 struct options {
     const char *conffile;
+    const char *pidfile;
     int verbose;
     bool dont_daemonize;
 };
