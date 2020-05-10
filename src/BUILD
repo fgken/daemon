@@ -8,6 +8,13 @@ cc_library(
 )
 
 cc_library(
+    name = "options",
+    srcs = ["options.c"],
+    hdrs = ["options.h", "daemon.h", "config.h"],
+    visibility = ["//test/src:__pkg__"],
+)
+
+cc_library(
     name = "daemon",
     srcs = ["daemon.c"],
     hdrs = ["daemon.h"],

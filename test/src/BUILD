@@ -7,3 +7,13 @@ cc_test(
         "//src:log",
     ],
 )
+
+cc_test(
+    name = "options-test",
+    srcs = ["options-test.cc"],
+    copts = ["-Iexternal/gtest/include -Isrc -Wno-writable-strings"],
+    deps = [
+        "@gtest//:main",
+        "//src:options",
+    ],
+)
