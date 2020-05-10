@@ -2,7 +2,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "config.h"
 #include "daemon.h"
 #include "options.h"
 
