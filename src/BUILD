@@ -26,6 +26,7 @@ cc_library(
     srcs = ["pidfile.c"],
     hdrs = ["pidfile.h"],
     visibility = ["//test/src:__pkg__"],
+    deps = ["log"],
 )
 
 cc_library(
