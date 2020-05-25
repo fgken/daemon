@@ -18,6 +18,12 @@ int test_num_of_outputs_to_syslog = 0;
 int test_level_of_last_output;
 
 int
+fprintf(FILE *stream, const char *format, ...)
+{
+    return 1;
+}
+
+int
 vfprintf(FILE *stream, const char *format, va_list ap)
 {
     test_num_of_outputs_to_stderr++;
