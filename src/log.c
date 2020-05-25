@@ -13,6 +13,26 @@ static int lowest_level = LOG_INFO;
 int test_num_of_outputs_to_stderr = 0;
 int test_num_of_outputs_to_syslog = 0;
 int test_level_of_last_output;
+
+int
+vfprintf(FILE *stream, const char *format, va_list ap)
+{
+    test_num_of_outputs_to_stderr++;
+    return 1;
+}
+
+int
+vprintf(const char *format, va_list ap)
+{
+    return 1;
+}
+
+void
+vsyslog(int priority, const char *message, va_list args)
+{
+    test_num_of_outputs_to_syslog++;
+    test_level_of_last_output = priority;
+}
 #endif
 
 void
@@ -46,21 +66,11 @@ vlog(int level, const char *fmt, va_list ap)
 
     va_copy(ap2, ap);
     if (use_stderr) {
-#ifndef UNIT_TEST
         vfprintf(stderr, fmt, ap);
         fprintf(stderr, "\n");
-#else
-        test_num_of_outputs_to_stderr++;
-        test_level_of_last_output = level;
-#endif
     }
     if (use_syslog) {
-#ifndef UNIT_TEST
         vsyslog(level, fmt, ap2);
-#else
-        test_num_of_outputs_to_syslog++;
-        test_level_of_last_output = level;
-#endif
     }
     va_end(ap2);
 }
