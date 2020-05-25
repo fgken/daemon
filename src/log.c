@@ -106,6 +106,7 @@ vlog(int level, const char *fmt, va_list ap)
         fprintf(stderr, "%s", header(&tv, level));
         vfprintf(stderr, fmt, ap);
         fprintf(stderr, "\n");
+        fflush(stderr);
     }
     if (use_syslog) {
         vsyslog(level, fmt, ap2);
