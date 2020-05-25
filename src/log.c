@@ -1,7 +1,10 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+#include <sys/time.h>
 #include <syslog.h>
+#include <time.h>
 
 #include "log.h"
 
@@ -56,6 +59,38 @@ log_set_output(int outputs)
     use_syslog = outputs & LOG_OUTPUT_SYSLOG;
 }
 
+static const char *
+level2str(int level)
+{
+    switch (level) {
+    case LOG_DEBUG:
+        return "DEBUG";
+    case LOG_INFO:
+        return "INFO ";
+    case LOG_WARNING:
+        return "WARN ";
+    case LOG_ERR:
+        return "ERROR";
+    default:
+        return "     ";
+    }
+}
+
+static const char *
+header(const struct timeval *tv, int level)
+{
+    static char buf[32];
+    char date[32];
+    struct tm tm;
+
+    localtime_r(&tv->tv_sec, &tm);
+    strftime(date, sizeof(date), "%Y/%m/%d %H:%M:%S", &tm);
+    snprintf(buf, sizeof(buf), "%s.%03u %s ", date, tv->tv_usec / 1000,
+             level2str(level));
+
+    return buf;
+}
+
 static void
 vlog(int level, const char *fmt, va_list ap)
 {
@@ -66,6 +101,9 @@ vlog(int level, const char *fmt, va_list ap)
 
     va_copy(ap2, ap);
     if (use_stderr) {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        fprintf(stderr, "%s", header(&tv, level));
         vfprintf(stderr, fmt, ap);
         fprintf(stderr, "\n");
     }
