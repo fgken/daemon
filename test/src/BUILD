@@ -27,3 +27,13 @@ cc_test(
         "//src:pidfile",
     ],
 )
+
+cc_test(
+    name = "control-test",
+    srcs = ["control-test.cc"],
+    copts = ["-Iexternal/gtest/include -Isrc"],
+    deps = [
+        "@gtest//:main",
+        "//src:control",
+    ],
+)

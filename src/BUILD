@@ -30,15 +30,17 @@ cc_library(
 )
 
 cc_library(
+    name = "control",
+    srcs = ["control.c"],
+    hdrs = ["control.h"],
+    visibility = ["//test/src:__pkg__"],
+    deps = ["log"],
+)
+
+cc_library(
     name = "daemon",
     srcs = ["daemon.c"],
-    hdrs = [
-        "daemon.h",
-        "log.h",
-        "config.h",
-        "options.h",
-        "pidfile.h",
-    ],
+    hdrs = ["daemon.h"],
     deps = [
         ":log",
         ":config",
