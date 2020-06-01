@@ -37,3 +37,13 @@ cc_test(
         "//src:control",
     ],
 )
+
+cc_test(
+    name = "config-test",
+    srcs = ["config-test.cc"],
+    copts = ["-Iexternal/gtest/include -Isrc"],
+    deps = [
+        "@gtest//:main",
+        "//src:config",
+    ],
+)

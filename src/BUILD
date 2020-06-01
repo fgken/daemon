@@ -19,6 +19,7 @@ cc_library(
     srcs = ["config.c"],
     hdrs = ["config.h"],
     visibility = ["//test/src:__pkg__"],
+    deps = ["log"],
 )
 
 cc_library(
